@@ -1,0 +1,268 @@
+INSTALACIÓN ARCH LINUX UEFI EN SSD
+
+Al iniciar la imagen lo primero que debemos hacer es configurar el teclado a español, para eso hacemos: loadkeys es.
+Posteriormente pasaremos a particionar el disco. Al ser una instalación en un sistema UEFI habrá que   comprobar si la partición GPT está presente en el disco. Hay varias herramientas disponibles para ello; parted, gfdisk, cfdisk…, pero yo utilizo GDISK. 
+Primero: lsblk -l para buscar la letra de la unidad, con solo un disco sería /dev/sda, si existe más de uno lo buscamos en la lista que nos ofrece el comando anterior.
+
+>>> gdisk /dev/sda
+
+Y entramos en la configuración que nos dirá si la partición GPT está presente. Posteriormente presionamos n para crear una nueva partición. Está sería la primera y la daremos +512M y ef00 para indicar que es nuestro UEFI/BOOT. La partición 2 sería la raíz, yo suelo darle al menos +20G, aunque prefiero +30G y 8304. La partición 3 sería HOME con el resto del disco. Al ser SSD no necesitamos SWAP. Una vez hecho esto presionamos w marcamos yes y a otra cosa.
+
+En SSD se recomienda ext4 a la hora de formatear, así que:
+
+>>> mkfs.ext4 /dev/sda2
+>>> mkfs.ext4 /dev/sda3
+>>> mkfs.fat -F32 /dev/sda1
+>>> mount /dev/sda2 /mnt
+>>> cd /mnt
+>>> mkdir boot home
+>>> mount /dev/sda1 boot
+>>> mount /dev/sda3 home
+>>> pacstrap i /mnt base base-devel linux mkinitcpio
+>>> genfstab -U /mnt >> /mnt/etc/fstab
+
+Pasamos al entorno fake root:
+
+>>> arch-chroot /mnt /bin/zsh (o /bin/bash si se prefiere)
+
+Se instalan una serie de herramientas necesarias:
+
+>>> pacman -S os-prober dosfstools mtools vim zsh-completions ntp tmux linux-headers ntfs-3g
+
+Y pasamos a configurar:
+
+>>> vim /etc/locale.gen (y desmarcamos la línea que pone es_ES.UTF-8)
+>>> locale-gen
+>>> echo 'LANG=es_ES.UTF-8' > /etc/locale.conf
+>>> echo 'KEYMAP=es' > /etc/vconsole.conf
+>>> ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime
+>>> hwclock --systohc --localtime
+>>> echo 'hostname' > /etc/hostname
+
+Luego hay que instalar el gestor de arranque y en este caso me decanto por BOOTCTL, más rápido que el GRUB.
+
+>>> bootctl install
+
+Y pasamos a configurar los archivos:
+
+>>> vim /boot/loader/loader.conf
+
+Una vez dentro introducimos los siguientes datos:
+
+    	timeout 0 (si solamente vas a utilizar un sistema operativo no merece la pena esperar :)
+	default arch
+
+Y grabamos :wq.
+
+>>> vim /boot/loader/entries/arch.conf
+
+
+	tittle 		Arch Linux
+	linux  		/vmlinuz-linux
+	initrd 		/initramfs-linux.img
+	options		root=/dev/sda2 rw (con esto sobraría para lanzar pero es preferible con PARTUUID y otros parametros *)
+
+* Dentro de vim escribimos:
+
+	- :r! blkid
+ Copiamos la PARTUUID y la pegamos tras root=xxxxx-xxxxxx-xxx-xxxx y añadimos algunos parametros por ejemplo:
+
+ 	options 	root=PARTUUID=afc2f531-9615-4949-996c-2e3dcf31ca7c quiet loglevel=3 rw
+>>> mkinitcpio -p linux
+>>> systemctl enable dhcpcd
+>>> passwwd
+>>> exit
+>>> cd ..
+>>> umount -R /mnt 
+>>> reboot
+
+Una vez que accedemos al sistema comenzamos la configuración de usuario, entorno gráfico y demás polleces.
+
+>>> useraddd -m -g users -G wheel,storage,power -s /bin/zsh usuario
+>>> passwd usuario
+>>> vim /etc/sudoers (desmarcamos el grupo wheel)
+>>> vim /etc/pacman.d/mirrorlist (elegimos un espejo https rapidito https://mirrorone.com/archlinux/$repo/os/$arch está bien)
+>>> timedatectl set-local-rtc 1
+>>> systemctl enable ntpd
+>>> su usuario
+>>> sudo pacman -Syu
+>>> sudo pacman -S xorg-server xorg-xinit xorg-drivers xorg-apps xrog-twm xorg-xclock xterm
+>>> sudo startx
+>>> sudo pacman -S xdg-user-dirs
+>>> xdg-user-dirs-update
+>>> sudo vim /etc/pacman.conf
+
+	Desmarcar [multilib] y añadir:
+	
+	[archlinuxfr]
+	SigLevel = Never
+	Server = https://repo.archlinux.fr/$arch (últimamente no anda muy estable)
+
+	[aur-archlinux]
+	SigLevel = Never	
+	Server = https://repo.itmettke.de/aur/$repo/$arch
+        
+        [arcolinux_repo_3party]
+        SigLevel = Never
+        Include = /etc/pacman.d/arcolinux-mirrorlist
+        
+        
+>>> sudo pacman -Sy
+>>> sudo pacman -S yaourt
+>>> yaourt -Syua
+
+Llegados a este punto y para acelerar el proceso de instalación de todos los paquetes y librerías, si se desea un entorno de escritorio i3 con xfce4 de respaldo, os recomendaría clonar mis archivos de configuración en github:
+
+>>> git clone https://github.com/azrael-goofyholler/arch-config.git
+>>> cd arch-config
+
+Una vez dentro podéis indagar en los distintos archivos, aunque lo más sencillo sería cortar y pegar en sus respectivas carpetas, excepto con los paquetes a instalar, para ello hay un archivo y hacemos:
+
+>>> sudo pacman -S  - < pkglist.txt
+
+Eso nos dará todas las librerías y programas principales a instalar para una configuración con intel. Son aproximadamente 4'5 gigas de descarga y un total de 14 gigas una vez intalados. 
+
+Por si acaso la configuración de teclado no ha sido aceptada por el display-manager, una vez habilitado hacemos:
+
+>>> sudo systemctl enable lightdm.service
+>>> localectl --no-convert et-x11-keymap es pc105 deadtilde,dvorak grp:alt_shift_toggle
+
+Si no vamos a utilizar display-manager habría que crear un xinitrc con lo siguiente:
+
+>>> vim .xinitrc 
+
+	#!/bin/sh
+
+	userresources=$HOME/.Xresources
+	usermodmap=$HOME/.Xmodmap
+	sysresources=/etc/X11/xinit/.Xresources
+	sysmodmap=/etc/X11/xinit/.Xmodmap
+
+	# merge in defaults and keymaps
+
+	if [ -f $sysresources ]; then
+		xrdb -merge $sysresources
+
+	fi
+
+	if [ -f $sysmodmap ]; then
+    		xmodmap $sysmodmap
+	fi
+
+	if [ -f "$userresources" ]; then
+		xrdb -merge "$userresources"
+
+	fi
+
+	if [ -f "$usermodmap" ]; then
+    		xmodmap "$usermodmap"
+	fi
+
+	# start some nice programs
+
+	if [ -d /etc/X11/xinit/xinitrc.d ] ; then
+ 		for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
+  		[ -x "$f" ] && . "$f"
+ 		done
+ 		unset f
+	fi
+
+	exec i3
+	exec startxfce4 (opcional)
+
+Con esta configuración de xinitrc el entorno de escritorio entraría automáticamente desde la terminal, pero la diferencia en tiempo de arranque con respecto a lightdm apenas si varía.
+
+Una vez hecho todo esto habría que configurar los modulos del kernel y ... ¡al lío!
+
+>>> sudo pacman -S lzop
+>>> sudo vim /etc/mkinitcpio.conf
+
+	Para intel:
+
+		MODULES="intel_agp drm i915 acpi-cpufreq sd_mod ahci vfat ext4"
+		BINARIES="fsck fsck.vfat fsck.ext4 e2fsck dosfsck"
+		HOOKS="systemd"
+>>> sudo mkinitcpio -p linux
+>>> sudo systemctl disable dhcpcd
+>>> sudo systemctl stop dhcpcd
+>>> sudo systemctl enable NetworkManager
+>>> sudo systemctl start NetworkManager
+>>> sudo pacman -Syyu
+>>> reboot
+
+Una vez que accedamos al sistema se debe seguir configurando, es preferible entrar en xfce4 para instalar los paquetes restantes de i3 en sus respectivos destinos, en mi página de github aparecen los archivos a clonar de vim, bumblebee-status y oh-my-zsh para darle un toque "tope cañero" al tema.
+
+>>> systemctl list-unit-files (para ver que servicios de systemd están activos, cuales hay que enmascarar para agilizar el arranque del sistema)
+>>> systemd-analyze 
+	Tiempo de arranque del sistema, al usar systemd como único hook en la configuración de kernel, aparecería repartido de la 		siguiente manera: Startup finished in 9.405s (firmware) + 73ms (loader) + 312ms (kernel) + 878ms (initrd) + 1.383s (userspace) = 		12.053s
+	Dónde firmware sería el tiempo que la placa madre necesita para leer y lanzar todo el hardware, loader es el bootctl, sin tiempo de 		espera es casi automático, kernel, luego imagen del sistema y posteriormente el espacio de usuario. Con SSD, sin contar el firmware 		que oscila entre 7'5 y 10'5 segundos, el sistema oscila entre 2'2 y 3'1 segundos.
+
+>>> sudo vim /etc/X11/xorg.conf.d/20-intel.conf
+
+	Section 	"Device"
+		Identifier 	"Card0"
+		Driver 		"intel"
+		VendorName 	"Intel Corporation"
+		BoardName 	"Intel Corporation Xeon E3-1200 v2/3rd Gen Core processor Graphics Controller"
+		BusID 		"PCI:0:2:0"
+		Option 		"AccelMethod" 		"sna"    #sna
+		Option 		"SwapbuffersWait" 	"false"
+		Option 		"DRI" 			"true"
+		Option 		"TearFree" 		"true"
+	#	Option 		"DRI" 			"3"
+	EndSection
+
+Si usáis NVIDIA ya es otro cuento. Primero habría que acceder a modo consola: Crtl+Alt+F2 y:
+
+>>> sudo systemctl disable lightdm.service
+>>> sudo systemctl stop lightdm.service
+>>> sudo pacman -S nvidia-dkms libglund nvidia-utils opencl-nvidia lib32-nvidia-utils lib32-opencl-nvidia nvidia-settings
+
+Modificar el initramfs: 
+
+>>> sudo vim /etc/mkinitcpio.conf
+
+	MODULES="nvidia nvidia_modeset nvidia_uvm nvidia_drm..."
+
+>>> sudo vim /boot/loader/entries/arch.conf
+
+	Añadir nvidia-drm.modeset=1 tras rw.
+	
+>>> sudo mkinitcpio -p linux
+>>> cd /etc/pacman.d
+>>> sudo mkdir hooks
+>>> cd hooks
+>>> sudo vim nvidia.hook
+
+	[Trigger]
+	Operation=Install
+	Operation=Upgrade
+	Operation=Remove
+	Type=Package
+	Target=nvidia
+	[Action]
+	Depends=mkinitcpio
+	When=PostTransaction
+	Exec=/usr/bin/mkinitcpio -p
+>>> sudo vim /etc/X11/xorg.conf.d/20-nvidia.conf
+
+	Section "Device"
+        	Identifier "Nvidia Card"
+       		Driver "nvidia"
+        	VendorName "NVIDIA Corporation"
+        	BoardName "GeForce GTX 1050 Ti" (ejemplo tomado de ArchWiki)
+	EndSection
+
+>>> sudo systemctl enable lightdm.service
+>>> reboot
+
+Si todo va bien deberiamos ahora optimizar el SSD.
+
+>>> sudo vim /etc/fstab
+
+	Tanto en la partición raíz como home añadimos: defaults,noatime,discard
+
+>>> sudo fstrim -v /
+>>> sudo fstrim -v /home
+>>> sudo mkinitcpio -p linux
+>>> reboot

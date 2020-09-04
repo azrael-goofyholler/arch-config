@@ -1,0 +1,36 @@
+sw_volume: 100
+audio_device_state:1:pulse audio
+audio_device_state:1:my_fifo
+state: stop
+random: 0
+repeat: 0
+single: 0
+consume: 0
+crossfade: 0
+mixrampdb: 0.000000
+mixrampdelay: -1.000000
+playlist_begin
+0:Faith No More/1995 - King For A Day - Fool For A Lifetime/09-Digging the grave.mp3
+1:Queens Of The Stone Age/2000 - Rated R/11 - Queens Of The Stone Age - Lightning Song.mp3
+2:Queens Of The Stone Age/2000 - Rated R/12 - Queens Of The Stone Age - I Think I Lost My Headache.mp3
+3:Soundgarden/1991- Badmotorfinger/01 - Soundgarden - Rusty Cage.mp3
+4:Incubus/2004 - A Crow Left Of The Murder/04 - Talk Show On Mute.mp3
+5:Incubus/1997 - S.C.I.E.N.C.E/01-Incubus  _ Redefine.mp3
+6:Incubus/1997 - S.C.I.E.N.C.E/12-Incubus  _ Calgone.mp3
+7:Incubus/1997 - S.C.I.E.N.C.E/04-Incubus  _ Idiot Box.mp3
+8:Incubus/1997 - S.C.I.E.N.C.E/07-Incubus  _ A Certain Shade Of Green.mp3
+9:Incubus/1999 - Make Yourself (Tour Edition)/CD2/01-Pardon Me (acoustic).mp3
+10:Incubus/1999 - Make Yourself (Tour Edition)/CD1/07-INCUBUS _ Make Yourself.mp3
+11:Rage Against the Machine/RATM/Track 5.wav
+12:Danny Elfman/[Danny Elfman] EDWARD SCISSORHANDS/15 - The Grand Finale.mp3
+13:The Mars Volta/2004 - Frances The Mute/04-the_mars_volta-miranda,_that_ghost_just_isn't_holy_anymore.mp3
+14:Penderecki_CD1/Krzysztof Penderecki - De natura sonoris II for orchestra.ape
+15:Pearl Jam/2002 - Riot Act/14 - Arc.mp3
+16:Pearl Jam/2003 - Lost Dogs/CD 1/16 - Pearl Jam - Yellow Ledbetter - EMG - www.elitemusic.org.mp3
+17:A Perfect Circle/2003 - Thirteenth Step/09-a_perfect_circle-the_nurse_who_loved_me-fnt.mp3
+18:Alice In Chains/1994 - Jar Of Flies/Alice In Chains - Jar of flies_Sap - 06.Don't Follow.ogg
+19:Alice In Chains/1996 - MTV Unplugged/Alice In Chains - Nutshell.mp3
+20:Queens Of The Stone Age/1998 - Queens Of The Stone Age/01 - Regular John.mp3
+21:Queens Of The Stone Age/1998 - Queens Of The Stone Age/06 - How To Handle A Rope.mp3
+22:Queens Of The Stone Age/2000 - Rated R/07 - Queens Of The Stone Age - Quick And To The Pointless.mp3
+playlist_end
