@@ -12,6 +12,7 @@ adobe-source-sans-pro-fonts
 adwaita-icon-theme
 aircrack-ng
 alembic
+alsa-card-profiles
 alsa-firmware
 alsa-lib
 alsa-oss
@@ -142,6 +143,7 @@ d-feet
 dav1d
 db
 dbus
+dbus-broker
 dbus-glib
 dconf
 dconf-editor
@@ -182,7 +184,7 @@ efivar
 egl-wayland
 eglexternalplatform
 electron
-electron5
+electron6
 elfutils
 embree
 enca
@@ -227,6 +229,7 @@ flatpak
 flatpak-builder
 flex
 fluidsynth
+fmt
 folks
 fontconfig
 fontforge
@@ -477,6 +480,7 @@ gsmartcontrol
 gsound
 gspell
 gssdp
+gst-editing-services
 gst-libav
 gst-plugin-gtk
 gst-plugins-bad
@@ -486,7 +490,6 @@ gst-plugins-base-libs
 gst-plugins-good
 gst-plugins-ugly
 gst-python
-gst-transcoder
 gstreamer
 gstreamer-vaapi
 gstreamermm
@@ -512,6 +515,7 @@ gtop
 gts
 gucharmap
 guile
+gumbo-parser
 gupnp
 gupnp-av
 gupnp-dlna
@@ -582,6 +586,7 @@ haskell-scientific
 haskell-semigroupoids
 haskell-setlocale
 haskell-split
+haskell-splitmix
 haskell-statevar
 haskell-streaming-commons
 haskell-tagged
@@ -658,6 +663,7 @@ jfsutils
 js52
 js60
 js68
+js78
 json-c
 json-glib
 jsoncpp
@@ -762,6 +768,7 @@ lib32-libvorbis
 lib32-libx11
 lib32-libxau
 lib32-libxcb
+lib32-libxcrypt
 lib32-libxdamage
 lib32-libxdmcp
 lib32-libxext
@@ -806,6 +813,7 @@ libasyncns
 libatasmart
 libatomic_ops
 libavc1394
+libavtp
 libblockdev
 libbluray
 libbs2b
@@ -827,6 +835,7 @@ libcec
 libchamplain
 libclastfm
 libclc
+libcloudproviders
 libcmis
 libconfig
 libcroco
@@ -894,6 +903,7 @@ libgusb
 libgweather
 libgxps
 libhandy
+libhandy0
 libheif
 libibus
 libical
@@ -933,6 +943,7 @@ libmbim
 libmediaart
 libmediainfo
 libmfx
+libmicrodns
 libmicrohttpd
 libmikmod
 libmm-glib
@@ -1015,6 +1026,7 @@ libseccomp
 libsecret
 libshout
 libsidplay
+libsidplayfp
 libsigc++
 libsigsegv
 libslirp
@@ -1057,7 +1069,6 @@ libusb-compat
 libusbmuxd
 libutempter
 libutf8proc
-libutil-linux
 libuv
 libva
 libva-mesa-driver
@@ -1164,6 +1175,7 @@ lua52-luajson
 lua52-socket
 lua53
 luajit
+luit
 lvm2
 lxappearance
 lxrandr
@@ -1494,7 +1506,7 @@ pulseaudio
 pulseaudio-alsa
 pulseaudio-bluetooth
 pulsemixer
-pygobject-devel
+pybind11
 python
 python-anytree
 python-appdirs
@@ -1671,8 +1683,6 @@ python2-ipaddress
 python2-lockfile
 python2-lxml
 python2-msgpack
-python2-netifaces
-python2-opengl
 python2-ordered-set
 python2-packaging
 python2-pathlib2
@@ -1864,6 +1874,7 @@ sudo
 suil
 suitesparse
 sushi
+svt-hevc
 swell-foop
 swig
 sxhkd
@@ -1911,6 +1922,8 @@ tpacpi-bat
 tpm2-tss
 tracker
 tracker-miners
+tracker3
+tracker3-miners
 trash-cli
 tree
 tslib
@@ -1942,6 +1955,7 @@ usbmuxd
 usbredir
 usbutils
 util-linux
+util-linux-libs
 uudeview
 v4l-utils
 vala
@@ -2009,7 +2023,7 @@ wxgtk-common
 wxgtk3
 x264
 x265
-xapps
+xapp
 xarchiver
 xautolock
 xbitmaps
@@ -2042,6 +2056,7 @@ xf86-video-amdgpu
 xf86-video-ati
 xf86-video-dummy
 xf86-video-fbdev
+xf86-video-intel
 xf86-video-nouveau
 xf86-video-openchrome
 xf86-video-qxl
@@ -2093,7 +2108,6 @@ xorg-fonts-alias-misc
 xorg-fonts-encodings
 xorg-fonts-misc
 xorg-iceauth
-xorg-luit
 xorg-mkfontscale
 xorg-server
 xorg-server-common
@@ -2167,4 +2181,5 @@ zsh-completions
 zsh-syntax-highlighting
 zstd
 zvbi
+zxing-cpp
 zziplib
