@@ -660,8 +660,6 @@ jasper
 jbig2dec
 jemalloc
 jfsutils
-js52
-js60
 js68
 js78
 json-c
