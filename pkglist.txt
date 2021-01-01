@@ -274,8 +274,6 @@ gambas3-gb-form-stock
 gambas3-gb-form-terminal
 gambas3-gb-gmp
 gambas3-gb-gsl
-gambas3-gb-gtk
-gambas3-gb-gtk-opengl
 gambas3-gb-gtk3
 gambas3-gb-httpd
 gambas3-gb-image
@@ -1295,7 +1293,6 @@ opensubdiv
 openvdb
 opus
 opusfile
-orage
 orc
 orca
 os-prober
